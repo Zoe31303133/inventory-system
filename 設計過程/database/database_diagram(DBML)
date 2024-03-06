@@ -1,0 +1,85 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+
+table Resources {
+    id varchar
+}
+
+table Permission_levels {
+    level tinyint
+    description varchar
+ 
+}
+
+table Roles {
+    id varchar 
+}
+
+table Role_permissions {
+    role_id varchar
+    resource_id varchar
+    permission_level tinyint
+}
+
+Ref: Role_permissions.permission_level > Permission_levels.level
+Ref: Role_permissions.resource_id > Resources.id
+Ref: Role_permissions.role_id > Roles.id
+
+table Users {
+    id varchar   
+}
+
+table User_roles {
+    user_id varcha
+    role_id varchar
+}
+
+Ref: User_roles.user_id > Users.id
+Ref: User_roles.role_id > Roles.id
+
+table Ingredients {
+    id varchar
+    unit varchar
+}
+
+table Products {
+    id varchar
+}
+
+table Product_ingredients {
+    product_id varchar
+    ingredient_id varchar
+    quantity int
+}
+
+Ref: Product_ingredient.ingredient_id > Ingredients.id
+Ref: Product_ingredient.product_id > Products.id
+
+
+table Orders{
+    id varchar
+    product_id varchar
+    quantity int
+    date date 
+    time time 
+
+}
+
+Ref: Orders.product_id > Products.id
+
+table Stock_products {
+    product_id varchar
+    quantity int
+}
+
+table Stock_ingredients {
+    ingredient_id varchar
+    quantity int
+}
+
+
+Ref: Stock_products.product_id > Products.id // many-to-one
+Ref: Stock_ingredients.ingredient_id > Ingredients.id // many-to-one
+
+
