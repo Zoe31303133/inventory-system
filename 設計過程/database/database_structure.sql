@@ -35,7 +35,7 @@ CREATE TABLE User_roles (
     primary key(user_id, role_id)    
 );
 
-CREATE TABLE Ingredient (
+CREATE TABLE Ingredients (
     id varchar(25),
     unit varchar(25),
     primary key(id, unit)  
@@ -46,7 +46,7 @@ CREATE TABLE Products (
     primary key(id)
 );
 
-CREATE TABLE Product_ingredient (
+CREATE TABLE Product_ingredients (
     product_id varchar(25),
     ingredient_id varchar(25),
     quantity int(5) NOT NULL,
@@ -76,3 +76,4 @@ CREATE TABLE Stock_ingredients (
     primary key(ingredient_id)
 );
 
+insert into resources values ('user'), ('role'),('product'),('stock_product'),('stock_ingredient'), ('order');
