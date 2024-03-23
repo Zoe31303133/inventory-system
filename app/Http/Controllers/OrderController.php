@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
+use App\Models\Order_item;
 
 class OrderController extends Controller
 {
@@ -29,7 +30,10 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request)
     {
-        //
+        $order = Order::create($request->all());
+
+        $order->items()->createMany($request->items);
+
     }
 
     /**
@@ -61,6 +65,6 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        //
+        $order->delete();
     }
 }
