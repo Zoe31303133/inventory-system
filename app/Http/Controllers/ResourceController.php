@@ -13,7 +13,7 @@ class ResourceController extends Controller
      */
     public function index()
     {
-        return Resource::all();
+        return Resource::pluck('id');
     }
 
 
