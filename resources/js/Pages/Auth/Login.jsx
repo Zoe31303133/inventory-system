@@ -50,7 +50,7 @@ export default function Login({ status, canResetPassword }) {
                     <InputError message={errors.email} className="mt-2" />
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-4 gap">
                     <InputLabel htmlFor="password" value="Password" />
 
                     <TextInput
@@ -90,6 +90,9 @@ export default function Login({ status, canResetPassword }) {
                     <PrimaryButton className="ms-4" disabled={processing}>
                         Log in
                     </PrimaryButton>
+                </div>
+                <div className=''>
+                        s
                 </div>
             </form>
         </GuestLayout>
