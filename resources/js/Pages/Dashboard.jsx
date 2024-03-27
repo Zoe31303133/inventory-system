@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import ManagerSideBar from '@/Components/SideBars/manager';
 import UserManagement from '@/Components/Dashboard/main/UserManagement.jsx'
 import RoleManagement from '@/Components/Dashboard/main/RoleManagement.jsx'
+import ProductManagement from '@/Components/Dashboard/main/ProductManagement.jsx'
 import { Head } from '@inertiajs/react';
 import '../../../resources/bootstrap_module/sidebars/sidebars.js';
 
@@ -20,6 +21,7 @@ export default function Dashboard({ auth }) {
                     <Routes>
                         <Route path="/employee" Component={UserManagement}></Route>
                         <Route path="/role" Component={RoleManagement}></Route>
+                        <Route path="/product" Component={ProductManagement}></Route>
                     </Routes>
 
                 </main>

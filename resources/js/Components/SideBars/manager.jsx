@@ -22,7 +22,7 @@ export default function manager(){
                 </button>
                 <div className="collapse" id="dashboard-collapse">
                   <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="#" className="link-body-emphasis d-inline-flex text-decoration-none rounded">商品列表</a></li>
+                    <li><a href="/dashboard/#/product" className="link-body-emphasis d-inline-flex text-decoration-none rounded">商品列表</a></li>
                     <li><a href="#" className="link-body-emphasis d-inline-flex text-decoration-none rounded">商品庫存</a></li>
                     <li><a href="#" className="link-body-emphasis d-inline-flex text-decoration-none rounded">原物料庫存</a></li>
                     <li><a href="#" className="link-body-emphasis d-inline-flex text-decoration-none rounded">原物料庫存</a></li>
