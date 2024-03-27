@@ -11,7 +11,7 @@ export default function manager(){
                 </button>
                 <div className="collapse show" id="home-collapse">
                   <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="#" className="link-body-emphasis d-inline-flex text-decoration-none rounded">員工列表</a></li>
+                    <li><a href="/dashboard/#/employee" className="link-body-emphasis d-inline-flex text-decoration-none rounded">員工列表</a></li>
                     <li><a href="#" className="link-body-emphasis d-inline-flex text-decoration-none rounded">職位權限</a></li>
                   </ul>
                 </div>
