@@ -1,146 +1,96 @@
-import React,{Component, useEffect, useState} from 'react';
+import React,{Component, useEffect, useRef, useState} from 'react';
 // import '@/drag_list';
 
+class Machine{
+    constructor(id, state){
+        this.id = id;
+        this.state = state;
+        this.tasks = [];
+        this.endTime = 0;
+    }
+
+    pushTask(task){
+        this.tasks.push(task);
+    }
+
+    insertTask(task, index){
+
+    }
+
+    removeTask(index){
+        this.tasks.splice(index,1);
+    }
+}
+
+class Task{
+    constructor(productName, duration){
+        this.productName = productName;
+        this.duration = duration;
+    }
+}
+
+class TaskSchedule{
+    constructor(){
+        this.machineList = {};
+    }
+
+    addMachine(machine){
+        this.machineList[machine.id]=machine;
+    }
+
+    removeMachine(machineID){
+        delete this.machineList[machineID];
+    }
+}
 
 export default function ProcssSchedule(){
 
-      const fake_machineSchedule= [
-            {
-                machineID:"001",
-                process:[
-                    {
-                        productName: "原味雞胸肉",
-                        quantity: 12,
-                        unit: "kg",
-                        duration: "01:00"
-                    },
-                    {
-                        productName: "義式雞胸肉",
-                        quantity: 12,
-                        unit: "kg",
-                        duration: "01:00"
-                    },
-                    {
-                        productName: "咖哩雞胸肉",
-                        quantity: 12,
-                        unit: "kg",
-                        duration: "01:00"
-                    },
-                    {
-                        productName: "台式雞胸肉",
-                        quantity: 12,
-                        unit: "kg",
-                        duration: "01:00"
-                    },
-                    {
-                        productName: "花雕雞胸肉",
-                        quantity: 12,
-                        unit: "kg",
-                        duration: "01:00"
-                    },
-                    {
-                        productName: "四川雞胸肉",
-                        quantity: 12,
-                        unit: "kg",
-                        duration: "01:00"
-                    }
-                ]
-            },
-            {
-                machineID:"002",
-                process:[
-                    {
-                        productName: "原味雞胸肉",
-                        quantity: 12,
-                        unit: "kg",
-                        duration: "01:00"
-                    },
-                    {
-                        productName: "義式雞胸肉",
-                        quantity: 12,
-                        unit: "kg",
-                        duration: "01:00"
-                    },
-                    {
-                        productName: "咖哩雞胸肉",
-                        quantity: 12,
-                        unit: "kg",
-                        duration: "01:00"
-                    },
-                    {
-                        productName: "台式雞胸肉",
-                        quantity: 12,
-                        unit: "kg",
-                        duration: "01:00"
-                    },
-                    {
-                        productName: "花雕雞胸肉",
-                        quantity: 12,
-                        unit: "kg",
-                        duration: "01:00"
-                    },
-                    {
-                        productName: "四川雞胸肉",
-                        quantity: 12,
-                        unit: "kg",
-                        duration: "01:00"
-                    }
-                ]
-            }
-                 ];
-      const [machineSchedule, setMachineSchedule] = useState(fake_machineSchedule);
-      const products = ["原味雞胸肉", "義式雞胸肉", "咖哩雞胸原味肉", "花雕原味雞胸肉", "原味泰式原味雞胸肉"];
+    const [editMode, setEditMode] = useState(false);
+    const [taskSchedule, setTaskSchedule]= useState();
+    const dragOut = useRef();
+    const dragIn = useRef();
+
+    // DB date
+    const DB_machines = [
+        {id: "001", state:"aviliable"},{id: "002", state:"aviliable"},{id: "003", state:"aviliable"},{id: "004", state:"unaviliable"}
+    ] ;
+
+    const DB_tasks = [
+        {productName:"productName", machineID:"001", order:"2", duration:"01:00"},
+        {productName:"productName", machineID:"001", order:"1", duration:"01:00"},
+        {productName:"productName", machineID:"002", order:"1", duration:"01:00"},
+        {productName:"productName", machineID:"003", order:"1", duration:"01:00"}
+    ];
+
+    const DB_products = ["原味雞胸肉", "義式雞胸肉", "咖哩雞胸原味肉", "花雕原味雞胸肉", "原味泰式原味雞胸肉"];
 
 
 
-      useEffect(()=>{
-        console.log(machineSchedule);
-
-        $( function() {
-            $( ".schedule" ).sortable({
-                items: ".ui-state-default:not(.ui-state-disabled)",
-                update: function(event, ui ){
-                    
-                    var schedule = $(this).closest('.schedule');
-                    var processes = $(schedule).find("div .ui-state-default");
-                    var order = [];
-                    $.each(processes,(key, value)=>{
-                        order.push($(value).attr("index"));
-                    })
-                
-                    var machineID = $(this).attr("machineID");
-                    var updateSchedule = machineSchedule.map((i)=>{ return {...i}});
-                    updateSchedule.forEach(
-                        machine => {
-                            if(machine.machineID==machineID)
-                            {
-                                var reorder = [];                
-                                order.forEach((value)=>{
-                                    reorder.push(machine.process[value]);
-                                })
-                                machine.process = reorder;
-                                
-                                return false;
-                            }  
-                        })
-                    $(this).sortable('cancel');
-                    setMachineSchedule(updateSchedule);
-     
-            }
-        });
-
+    useEffect(()=>{
         
-        $( "#schedule001 , #schedule002 " ).disableSelection();
-        } );
-                },[machineSchedule]);
+        let taskSchedule = new TaskSchedule();
 
-      
+        DB_machines.forEach((machine)=>{
+            var newMachine = new Machine(machine.id, machine.state);
+            taskSchedule.addMachine(newMachine);
+        })
 
-     function editToggle() {
-        $(".edit").toggle();
-        var sortDisable = $(".draggable_table").sortable("option", "disabled");
-        $(".draggable_table").sortable(sortDisable?"enable":"disable").disableSelection();  
-     }
+
+        DB_tasks.sort((a,b)=>{
+            return a.order-b.order
+        })
+
+        DB_tasks.forEach((task)=>{
+            var newTask = new Task(task.productName, task.duration);
+            var machine = taskSchedule.machineList[task.machineID];
+            machine.pushTask(newTask);
+        })
+
+        setTaskSchedule(taskSchedule);
+        
+    }, [])
+
+
 
      function search(e, list){
         $(e.target).autocomplete({
@@ -166,52 +116,64 @@ export default function ProcssSchedule(){
         return matchStart.concat(matchInside);
      }
 
-     function addProcess(machineID){
+     function addProcess(event, machineID){
 
-        var schedule = $("#schedule"+machineID);
-        var inputDOMs = $(schedule).find("input");
+        event.preventDefault();
 
-        var inputValue = {};
-        $(inputDOMs).each(function(){
-            inputValue[this.name]=this.value;
-        });
+        var inputs = new FormData(event.target);
+        inputs = Object.fromEntries(inputs.entries());
 
+        var newTask = new Task(inputs.productName, inputs.duration);
 
-        console.log(formatValidation(inputDOMs));
+        var schedule = {...taskSchedule};
+        schedule.machineList[machineID].pushTask(newTask);
+    
+        setTaskSchedule(schedule);
+    
+        
+     }
 
-        var updateData = 
+     function deleteProcess(machineID, index){
+
+        
+            var schedule = {...taskSchedule};
+            schedule.machineList[machineID].removeTask(index);
+            setTaskSchedule(schedule);
+        
+
+     }
+
+     function dragStart(machineID, index){
+        console.log(machineID,index);
+        dragOut.current = {machineID:machineID, index:index};
+     }
+
+     function dragEnter(e, machineID, index){
+        e.stopPropagation();
+        dragIn.current = {machineID:machineID, index:index};
+     }
+
+     function dragEnd(){
+        var schedule = {...taskSchedule};
+        var remove_taskList = schedule.machineList[dragOut.current.machineID].tasks;
+        var insert_taskList = schedule.machineList[dragIn.current.machineID].tasks;
+        var draggedTarget = remove_taskList.splice(dragOut.index, 1)[0];
+
+        if(dragIn.current.index==-1)
         {
-            productName: inputValue["productName"],
-            quantity: inputValue["quantity"],
-            unit: "kg",
-            duration: inputValue["duration"]
+            insert_taskList.push(draggedTarget)
         }
-
-
-        var updateSchedule = [...machineSchedule];
-        updateSchedule.forEach(
-            machine => {
-                if(machine.machineID==machineID)
-                {
-                    machine.process.push(updateData);
-                    return false;
-                }  
-            }
-        )
-       setMachineSchedule(updateSchedule);
-       $(inputDOMs).val("");
+        else if(dragIn.current.index>-1)
+        {
+            insert_taskList.splice(dragIn.current.index, 0, draggedTarget);
+        }
+        
+        setTaskSchedule(schedule);
      }
 
-     function deleteProcess(machine, index){
-        machine.process.splice(index, 1);
-        console.log(machine);
+     function dragOnSpace(machineID){
+        dragIn.current = {machineID:machineID, index:-1};
      }
-
-     function selectScheduleByDOM(childDOM)
-     {
-        return $(childDOM).closest(".schedule");
-     }
-
 
      function formatValidation(inputDOMs){
 
@@ -236,54 +198,69 @@ export default function ProcssSchedule(){
            
             return valid;
      }
+
     return <div className="col-md-9  ms-sm-auto col-lg-10 px-md-4 overflow-scroll">
              <div className="d-flex flex-column justify-content-between flex-wrap flex-md-nowrap pt-3 pb-2 mt-5 mb-3 border-bottom">
                 <div class="d-flex gap-5 justify-content-between">
-                    <h1 class="h2">商品總覽</h1>   
-                    <button className="btn btn-success" onClick={editToggle}>編輯</button>
+                    <h1 class="h2">機台排程</h1>   
+                    <button className="btn btn-success" onClick={()=>{setEditMode(true)}}>編輯</button>
                 </div>   
             </div>
       
         <div>
            
             <div className="d-flex gap-3 small mt-3">
-                {machineSchedule.map((machine)=>{
 
+                {taskSchedule && Object.keys(taskSchedule.machineList).map((machineID)=>{
+                    
+                    var machine = taskSchedule.machineList[machineID];
+                    var tasks = machine.tasks;
                     var startTime = new Time("08:00");
 
                     var machineName = (
-                        <h5 className='text-center'>機台ID: {machine.machineID}</h5>
+                        <h5 className='text-center'>機台ID: {machineID}</h5>
                     )
+
+                    if(machine.state == "unaviliable")
+                    {
+                        return <div className="schedule" id={"schedule"+machine.machineID} machineID={machine.machineID} style={{"width": "350px", "font-size": "14px"}}>
+                                    {machineName}
+                                    <div className='text-center bg-danger-subtle text-danger'>停用</div>
+                               </div>
+                    }
+
 
                     var scheduleHeader = (
                         <div className='border rounded-2 px-3 py-2 text-white' style={{"display": "flex", "background-color": "gray"}}>
                         <div style={{"flex": "2"}}>商品名稱</div>
-                        <div style={{"flex": "1"}}>數量</div>
-                        <div style={{"flex": "1"}}>時間</div>
-                        <div style={{"flex": "1"}}></div>
+                        <div style={{"flex": "1"}}>時長</div>
+                        <div style={{"flex": "1"}}>結束時間</div>
                     </div>
                     )
 
-                    var scheduleRow = machine.process.map((process, index)=>{
-                        var processTime = stringToTime(process.duration);
-                        startTime.hour +=  processTime.hour;
-                        startTime.min +=  processTime.min;
+                    var scheduleRow = tasks.map((task, index)=>{
+                        var taskTime = stringToTime(task.duration);
+                        startTime.hour +=  taskTime.hour;
+                        startTime.min +=  taskTime.min;
 
-                        return <div index={index} className="ui-state-default border rounded-2 px-3 py-1" style={{"display": "flex"}}>
-                            <div style={{"flex": "2"}}>{process.productName}</div>
-                            <div style={{"flex": "1"}}>{process.quantity+process.unit}</div>
-                            <div className="duration" style={{"flex": "1"}}>{process.duration}</div>
+                        return <div index={index} 
+                        className="ui-state-default border rounded-2 px-3 py-1" 
+                        style={{"display": "flex", cursor:"move"}} 
+                        draggable
+                        onDragStart={e=>dragStart(machineID, index)}
+                        onDragEnter={e=>dragEnter(e, machineID, index)} 
+                        onDragEnd={dragEnd}>
+                        
+                            <div style={{"flex": "2"}}>{task.productName}</div>
+                            <div className="duration" style={{"flex": "1"}}>{task.duration}</div>
                             <div className="finish"  style={{"flex": "1"}}>{startTime.toString}</div>
-                            <button onClick={(e)=>{deleteProcess(machine, index)}}>刪</button>
+                            <button className="btn btn-sm border-danger-subtle text-danger" onClick={(e)=>{deleteProcess(machineID, index)}}>刪除</button>
                         </div>
                     })
-
-                    function a(){
-                        alert("a")
-                    }
                    
                     var scheduleTable = (
-                        <div id="sortable1" className="draggable_table gap-1" style={{"display": "flex", "flex-direction":"column"}}>
+                        <div className=" gap-1" style={{"display": "flex", "flex-direction":"column", "min-height": "150px"}}
+                        onDragEnter={(e)=>dragOnSpace(machineID)}>
                         {scheduleHeader}
                         {scheduleRow}
                         </div>
@@ -293,13 +270,10 @@ export default function ProcssSchedule(){
                     <div className="edit addInput">
                         <div className="d-flex  mt-2 rounded-2 px-2 py-2" >
                             <div className='px-1' style={{"flex": "2"}}>
-                            <input type="text" className='w-100' defaultValue="原味雞胸肉" name="productName" onKeyUp={(e)=>search(e, products)}></input>
-                            </div>
-                            <div className='px-1' style={{"flex": "1", }}>
-                                <input type="text" className='w-100' defaultValue="12" name="quantity"></input>
+                            <input type="text" className='w-100  form-control ' defaultValue="原味雞胸肉" name="productName" onKeyUp={(e)=>search(e, products)}></input>
                             </div>
                             <div className='px-1' style={{"flex": "1" }}>
-                                <input type="time" className='w-100' defaultValue="01:00" name="duration"></input>
+                                <input type="time" className='w-100 form-control' defaultValue="01:00" name="duration"></input>
                             </div>
                         </div>
                     </div>)
@@ -307,7 +281,7 @@ export default function ProcssSchedule(){
                     var addScheduleBtn = (
                         <div className='edit'>
                             <div className="d-flex justify-content-center">
-                                <button className=" addBtn btn" onClick={(e)=>{addProcess(machine.machineID)}}>+ 新增</button>
+                                <button className=" addBtn btn" >+ 新增</button>
                             </div>
                         </div>
                     )
@@ -315,8 +289,10 @@ export default function ProcssSchedule(){
                     return <div className="schedule" id={"schedule"+machine.machineID} machineID={machine.machineID} style={{"width": "350px", "font-size": "14px"}}>
                         {machineName}
                         {scheduleTable}
+                        <form onSubmit={(e)=>{addProcess(e, machineID)}}>
                         {addScheduleInput}
                         {addScheduleBtn}
+                        </form>
                     </div>
                 })}
             </div>
@@ -324,6 +300,8 @@ export default function ProcssSchedule(){
     </div>
     
 };
+
+
 class Time
 {
    constructor(timeStr){

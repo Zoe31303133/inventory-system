@@ -5,6 +5,7 @@ import UserManagement from '@/Components/Dashboard/main/UserManagement.jsx'
 import RoleManagement from '@/Components/Dashboard/main/RoleManagement.jsx'
 import ProductManagement from '@/Components/Dashboard/main/ProductManagement.jsx'
 import ProductStockManagement from '@/Components/Dashboard/main/ProductStockManagement.jsx'
+import ProcessSchedule from '@/Components/Dashboard/main/ProcessSchedule.jsx'
 import { Head } from '@inertiajs/react';
 import '../../../resources/bootstrap_module/sidebars/sidebars.js';
 
@@ -24,6 +25,7 @@ export default function Dashboard({ auth }) {
                         <Route path="/role" Component={RoleManagement}></Route>
                         <Route path="/product" Component={ProductManagement}></Route>
                         <Route path="/productStock" Component={ProductStockManagement}></Route>
+                        <Route path="/processSchedule" Component={ProcessSchedule}></Route>
                     </Routes>
 
                 </main>

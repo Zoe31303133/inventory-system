@@ -47,7 +47,7 @@ export default function manager(){
                 </button>
                 <div className="collapse" id="schedule-collapse">
                   <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="#" className="link-body-emphasis d-inline-flex text-decoration-none rounded">本日製程</a></li>
+                    <li><a href="/dashboard/#/processSchedule" className="link-body-emphasis d-inline-flex text-decoration-none rounded">機台排程</a></li>
                     <li><a href="#" className="link-body-emphasis d-inline-flex text-decoration-none rounded">本週製程</a></li>
                   </ul>
                 </div>
