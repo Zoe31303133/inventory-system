@@ -32,19 +32,3 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resources([
-    'permission_levels' => PermissionLevelController::class,
-    'resources' => ResourceController::class,
-    'ingredients' => IngredientController::class,
-    'products' => ProductController::class,
-    'product_types' => ProductTypeController::class,
-    'product_ingredients' => ProductIngredientController::class,
-    'stock_ingredients' => StockIngredientController::class,
-    'stock_products' => StockProductController::class,
-    'orders' => OrderController::class,
-    'order_items' => OrderItemController::class,
-    'users' => UserController::class,
-    'roles' => RoleController::class,
-    'role_permissions' => RolePermissionController::class,
-    'user_roles' => UserRoleController::class,
-]);
