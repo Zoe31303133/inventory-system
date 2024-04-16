@@ -7,14 +7,23 @@ use Illuminate\Http\Response;
 use App\Models\User;
 use App\Http\Controllers\RoleController;
 
+
 class UserController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(User::class, 'user');
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        
         return User::all();
+
     }
 
     /**
@@ -22,8 +31,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return 
-        ['roleList' =>(new RoleController)->index()];
+        return RoleController::all();
 
     }
 
@@ -72,7 +80,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+     
     }
 
 }
