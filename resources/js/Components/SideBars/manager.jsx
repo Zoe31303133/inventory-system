@@ -1,10 +1,12 @@
 import '../../../../resources/bootstrap_module/sidebars/sidebars.css';
 import '../../../../resources/bootstrap_module/assets/dist/js/bootstrap.bundle.min.js';
 
-export default function manager(){
+export default function manager({user}){
     return(
         <div className="d-flex flex-column flex-shrink-0 p-5 bg-body-tertiary" style={{width: "280px"}}>
         <ul className="nav nav-pills flex-column mb-auto gap-3">
+
+          { user.users_permission &&
             <li className="mb-1">
                 <button className="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
                   職員管理
@@ -16,6 +18,9 @@ export default function manager(){
                   </ul>
                 </div>
               </li>
+            }
+
+            { user.stocks_permission &&
               <li className="mb-1">
                 <button className="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
                   庫存管理
@@ -30,6 +35,9 @@ export default function manager(){
                   </ul>
                 </div>
               </li>
+            }
+
+            { user.products_permission &&
               <li className="mb-1">
                 <button className="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="false">
                   銷貨管理
@@ -41,6 +49,9 @@ export default function manager(){
                   </ul>
                 </div>
               </li>
+            }
+
+            { user.processes_permission &&
               <li className="mb-1">
                 <button className="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#schedule-collapse" aria-expanded="false">
                   製程管理
@@ -52,6 +63,8 @@ export default function manager(){
                   </ul>
                 </div>
               </li>
+            }
+
         </ul>
         <hr/>
         <div className="dropdown">
