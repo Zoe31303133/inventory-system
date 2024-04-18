@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('role_permissions', function (Blueprint $table) {
             $table->char('role_id',25);
-            $table->char('resource_id',25);
+            $table->char('resource_id',50);
             $table->tinyInteger('permission_level');
             $table->primary(['role_id','resource_id']);
         });
