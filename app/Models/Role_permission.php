@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Role_permission extends Model
 {
     use HasFactory;
+
+    public $fillable = ['role_id','resource_id', 'permission_level'];
+    public $timestamps  = false;
 }
