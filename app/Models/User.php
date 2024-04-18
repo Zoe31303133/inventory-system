@@ -66,7 +66,7 @@ class User extends Authenticatable
                                     ->where('resource_id', $resource)
                                     ->first();
 
-        return (!is_null($permission)?$permission->permission_level:'no permission'); 
+        return (!is_null($permission)?$permission->permission_level:null); 
 
     }
 

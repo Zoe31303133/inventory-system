@@ -10,16 +10,19 @@ import { Head } from '@inertiajs/react';
 import '../../../resources/bootstrap_module/sidebars/sidebars.js';
 
 export default function Dashboard({ auth }) {
+
     return (
         <AuthenticatedLayout
             user={auth.user}
+            csrf={auth.csrf}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
         }>
              <HashRouter>
                 <Head title="Dashboard" />
-                
                 <main className='d-flex flex-nowrap'>
-                    <ManagerSideBar></ManagerSideBar>
+                    <ManagerSideBar 
+                     user={auth.user}
+                     csrf={auth.csrf}></ManagerSideBar>
                     <Routes>
                         <Route path="/employee" Component={UserManagement}></Route>
                         <Route path="/role" Component={RoleManagement}></Route>
