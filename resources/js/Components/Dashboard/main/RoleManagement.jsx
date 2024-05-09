@@ -14,8 +14,7 @@ export default function RoleManagement(){
         
       }, []);
 
-    function handleSelect(e) {
-      
+    function handleSelectRole(e) {
         axios.get('/role_permissions/'+e.target.value).then((response)=>{
             setPermissions(response.data);
         });
@@ -34,7 +33,6 @@ export default function RoleManagement(){
       }
 
     function handleChangePermission(e){
-      console.log(e.target);
       const resource = e.target.name;
       const permission_level = e.target.value;
       permissions[resource]=permission_level;
@@ -51,7 +49,7 @@ export default function RoleManagement(){
           </div>
           <div className="modal-body p-5 py-0 fs-6">
               <div className="mb-3 ">
-                <select className="form-control form-control-sm" defaultValue="職位名稱" onChange={handleSelect}>
+                <select className="form-control form-control-sm" defaultValue="職位名稱" onChange={handleSelectRole}>
                   <option disabled>職位名稱</option>
                   {
                     roles && roles.map((role)=>{
