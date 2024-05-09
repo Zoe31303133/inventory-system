@@ -30,15 +30,20 @@ class RolePermissionController extends Controller
      */
     public function store(StoreRole_permissionRequest $request)
     {
-        foreach($request->permissions as $resource=>$permission_level)
+        foreach($request->permissions as $resource_id=>$permission_level)
         {
             if(($permission_level=="null"))
             {
-                Role_permission::where(['role_id'=>$request->role_id, 'resource_id'=>$resource])->delete();
+                Role_permission::where(['role_id'=>$request->role_id, 'resource_id'=>$resource_id])->delete();
             }
             else
             {
-                Role_permission::updateOrCreate(['role_id'=>$request->role_id, 'resource_id'=>$resource], ['permission_level'=>$permission_level]);
+
+                // when using updateOrCreate(), the model should have primary key.
+                // Laravel doesn't support composite primary key. 
+
+                $id = $request->role_id . "_" . $resource_id;
+                Role_permission::updateOrCreate(['id'=>$id, 'role_id'=>$request->role_id, 'resource_id'=>$resource_id], ['permission_level'=>$permission_level]);
             }
         }
 
