@@ -23,9 +23,10 @@ class Machine{
 }
 
 class Task{
-    constructor(productName, duration){
+    constructor(productName, duration, type){
         this.productName = productName;
         this.duration = duration;
+        this.type = type;
     }
 }
 
@@ -46,25 +47,64 @@ class TaskSchedule{
 export default function ProcssSchedule(){
 
     const [editMode, setEditMode] = useState(false);
-    const [taskSchedule, setTaskSchedule]= useState();
+    const [taskSchedule, setTaskSchedule]= useState(); 
     const dragOut = useRef();
     const dragIn = useRef();
 
+    const priority = ['蛋糕','餅乾'];
+
+    // sorting by priority and handle -1 return when type not be found in priority list.
+    function task_balance(arr, k){
+        var result = Array(k).fill().map(()=>[]);
+        var sum = Array(k).fill("00:00");
+
+        arr.sort((a,b)=>
+        (priority.indexOf(a.type)==-1 ? priority.length:priority.indexOf(a.type)) -
+        (priority.indexOf(b.type)==-1 ? priority.length:priority.indexOf(b.type))
+    )
+
+        arr.sort((a,b)=>b.duration>a.duration?true:false);
+        console.log((arr));
+        
+        arr.forEach((a)=>{
+          var minSum = sum.reduce((a,b)=>{return a<b?a:b});
+          var index = sum.indexOf(minSum);
+
+          sum[index]= new Time(sum[index]).add(new Time(a.duration));
+          result[index].push(a);
+
+        })
+        
+        result.forEach((schedule)=>{
+            schedule.sort((a,b)=>
+                    (priority.indexOf(a.type)==-1 ? priority.length:priority.indexOf(a.type)) -
+                    (priority.indexOf(b.type)==-1 ? priority.length:priority.indexOf(b.type))
+                )
+        })
+
+        return result;
+        }
+
     // DB date
     const DB_machines = [
-        {id: "001", state:"aviliable"},{id: "002", state:"aviliable"},{id: "003", state:"aviliable"},{id: "004", state:"unaviliable"}
+        {id: "001", state:"aviliable"},
+        {id: "002", state:"aviliable"},
+        {id: "003", state:"aviliable"},
+        {id: "004", state:"unaviliable"}
     ] ;
 
     const DB_tasks = [
-        {productName:"productName", machineID:"001", order:"2", duration:"01:00"},
-        {productName:"productName", machineID:"001", order:"1", duration:"01:00"},
-        {productName:"productName", machineID:"002", order:"1", duration:"01:00"},
-        {productName:"productName", machineID:"003", order:"1", duration:"01:00"}
+        {productName:"巧克力蛋糕", type:"蛋糕", duration:"03:00"},
+        {productName:"芋頭蛋糕", type:"蛋糕", duration:"02:00"},
+        {productName:"咖啡蛋糕", type:"蛋糕", duration:"01:00"},
+        {productName:"草莓蛋糕", type:"蛋糕", duration:"01:00"},
+        {productName:"香草餅乾", type:"餅乾", duration:"01:00"},
+        {productName:"紅茶餅乾", type:"餅乾", duration:"01:00"},
+        {productName:"抹茶餅乾", type:"餅乾", duration:"01:00"},
+        {productName:"巧克力餅乾", type:"餅乾", duration:"01:00"},
+        {productName:"咖啡餅乾", type:"餅乾", duration:"02:00"},
+    
     ];
-
-    const DB_products = ["原味雞胸肉", "義式雞胸肉", "咖哩雞胸原味肉", "花雕原味雞胸肉", "原味泰式原味雞胸肉"];
-
-
 
     useEffect(()=>{
         
@@ -75,22 +115,27 @@ export default function ProcssSchedule(){
             taskSchedule.addMachine(newMachine);
         })
 
+        let aviliable_machines =  DB_machines.filter((machine)=>{return machine.state=="aviliable"});
+        let aviliable_machine_num = aviliable_machines.length;
+        
+        console.log(aviliable_machine_num);
+        let t =task_balance(DB_tasks,aviliable_machine_num);
 
-        DB_tasks.sort((a,b)=>{
-            return a.order-b.order
-        })
 
-        DB_tasks.forEach((task)=>{
-            var newTask = new Task(task.productName, task.duration);
-            var machine = taskSchedule.machineList[task.machineID];
-            machine.pushTask(newTask);
-        })
+        for(let i =0; i<aviliable_machine_num; i++)
+        {
+            let machineID = aviliable_machines[i].id;
+            let machine = taskSchedule.machineList[machineID];
+            machine.tasks = t[i];
+        }
 
         setTaskSchedule(taskSchedule);
         
     }, [])
 
-
+    const handle_save = function(){
+        alert("請問確定要儲存嗎？")
+    }
 
      function search(e, list){
         $(e.target).autocomplete({
@@ -157,7 +202,7 @@ export default function ProcssSchedule(){
         var schedule = {...taskSchedule};
         var remove_taskList = schedule.machineList[dragOut.current.machineID].tasks;
         var insert_taskList = schedule.machineList[dragIn.current.machineID].tasks;
-        var draggedTarget = remove_taskList.splice(dragOut.index, 1)[0];
+        var draggedTarget = remove_taskList.splice(dragOut.current.index, 1)[0];
 
         if(dragIn.current.index==-1)
         {
@@ -201,9 +246,23 @@ export default function ProcssSchedule(){
 
     return <div className="col-md-9  ms-sm-auto col-lg-10 px-md-4 overflow-scroll">
              <div className="d-flex flex-column justify-content-between flex-wrap flex-md-nowrap pt-3 pb-2 mt-5 mb-3 border-bottom">
-                <div class="d-flex gap-5 justify-content-between">
-                    <h1 class="h2">機台排程</h1>   
-                    <button className="btn btn-success" onClick={()=>{setEditMode(true)}}>編輯</button>
+                <div class="d-flex gap-5">
+                <div class="d-flex gap-3"> 
+                    <h1 class="h2">日機台排程</h1>   
+                    <span>
+                    <input type="date" class="form-control" name="production_query_date" onChange={query}/>
+                    </span>
+                </div>   
+                {
+                    editMode?
+                    (<div className='d-flex gap-3'>
+                        <button className="btn btn-success" onClick={handle_save}>儲存</button>
+                        <button className="btn btn-danger" onClick={()=>{setEditMode(false)}}>取消</button>
+                     </div>
+                    ):
+                    (<button className="btn btn-secondary" onClick={()=>{setEditMode(true)}}>編輯</button>)
+                }
+                    
                 </div>   
             </div>
       
@@ -231,7 +290,7 @@ export default function ProcssSchedule(){
 
 
                     var scheduleHeader = (
-                        <div className='border rounded-2 px-3 py-2 text-white' style={{"display": "flex", "background-color": "gray"}}>
+                        <div className='border rounded-2 px-3 py-2 text-white' style={{"display": "flex", backgroundColor:editMode?"#CD853F":"gray"}}>
                         <div style={{"flex": "2"}}>商品名稱</div>
                         <div style={{"flex": "1"}}>時長</div>
                         <div style={{"flex": "1"}}>結束時間</div>
@@ -245,8 +304,8 @@ export default function ProcssSchedule(){
 
                         return <div index={index} 
                         className="ui-state-default border rounded-2 px-3 py-1" 
-                        style={{"display": "flex", cursor:"move"}} 
-                        draggable
+                        style={{"display": "flex", cursor:editMode&&"move", backgroundColor:editMode&&"#FFF8DC"}} 
+                        draggable={editMode}
                         onDragStart={e=>dragStart(machineID, index)}
                         onDragEnter={e=>dragEnter(e, machineID, index)} 
                         onDragEnd={dragEnd}>
@@ -254,7 +313,7 @@ export default function ProcssSchedule(){
                             <div style={{"flex": "2"}}>{task.productName}</div>
                             <div className="duration" style={{"flex": "1"}}>{task.duration}</div>
                             <div className="finish"  style={{"flex": "1"}}>{startTime.toString}</div>
-                            <button className="btn btn-sm border-danger-subtle text-danger" onClick={(e)=>{deleteProcess(machineID, index)}}>刪除</button>
+                            {/* <button className="btn btn-sm border-danger-subtle text-danger" onClick={(e)=>{deleteProcess(machineID, index)}}>刪除</button> */}
                         </div>
                     })
                    
@@ -266,32 +325,10 @@ export default function ProcssSchedule(){
                         </div>
                     )                    
 
-                    var addScheduleInput = (  
-                    <div className="edit addInput">
-                        <div className="d-flex  mt-2 rounded-2 px-2 py-2" >
-                            <div className='px-1' style={{"flex": "2"}}>
-                            <input type="text" className='w-100  form-control ' defaultValue="原味雞胸肉" name="productName" onKeyUp={(e)=>search(e, products)}></input>
-                            </div>
-                            <div className='px-1' style={{"flex": "1" }}>
-                                <input type="time" className='w-100 form-control' defaultValue="01:00" name="duration"></input>
-                            </div>
-                        </div>
-                    </div>)
-                    
-                    var addScheduleBtn = (
-                        <div className='edit'>
-                            <div className="d-flex justify-content-center">
-                                <button className=" addBtn btn" >+ 新增</button>
-                            </div>
-                        </div>
-                    )
-
                     return <div className="schedule" id={"schedule"+machine.machineID} machineID={machine.machineID} style={{"width": "350px", "font-size": "14px"}}>
                         {machineName}
                         {scheduleTable}
                         <form onSubmit={(e)=>{addProcess(e, machineID)}}>
-                        {addScheduleInput}
-                        {addScheduleBtn}
                         </form>
                     </div>
                 })}
@@ -314,9 +351,9 @@ class Time
    }
 
 
-   add()
+   add(time)
    {
-       this.hour++; this.min++;
+       this.hour+= time.hour; this.min+=time.min;
        return this.toString;
    }
 }
