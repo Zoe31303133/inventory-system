@@ -34,14 +34,16 @@ class HandleInertiaRequests extends Middleware
         
         if($user)
         {
-            $resource_permission = 
+            $user['permission'] = 
                 [
-                    'users_permission'=>$user->permissionTo(User::class),
-                    'products_permission'=>$user->permissionTo(Product::class)
-                ];
-
-            $user = array_merge($user->toArray(),$resource_permission);
-            
+                    'user'=>$user->permissionTo('User'),
+                    'role'=>$user->permissionTo('Role'),
+                    'product'=>$user->permissionTo('Product'),
+                    'stock_product'=>$user->permissionTo('Stock_product'),
+                    'stock_product'=>$user->permissionTo('Stock_ingredient'),
+                    'order'=>$user->permissionTo('Order'),
+                    'process'=>$user->permissionTo('Process'),
+                ];            
         }
     
         return [

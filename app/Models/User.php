@@ -61,13 +61,11 @@ class User extends Authenticatable
 
     public function permissionTo($resource){
         
-       
-       $permission = Role_permission::where('role_id', $this['role']['role_id'])
-                                    ->where('resource_id', $resource)
-                                    ->first();
-
-        return (!is_null($permission)?$permission->permission_level:null); 
-
+        $permission = $this->role->permission;
+        $permission_level = $permission
+                            ->firstWhere('resource_id',$resource);
+        
+        return $permission_level? $permission_level->permission_level : null ;
     }
 
 }
