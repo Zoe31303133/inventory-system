@@ -1,0 +1,18 @@
+ $updateData = array ('原味雞胸肉'=>'不是雞胸肉','鹽酥雞胸肉'=>'雞胸肉');
+
+        $DB_nameList = Product::all()->pluck('name');
+    
+        foreach($DB_nameList as $name)
+        {
+            if(!isset($json[$name]))
+            {
+                Product::where('name', $name)->delete();
+            }
+        }
+
+        foreach($updateData as $name=>$type)
+        {
+
+            Product::updateOrCreate(['name'=>$name], ['type'=>$type]);
+            
+        }

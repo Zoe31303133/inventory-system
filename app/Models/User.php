@@ -6,7 +6,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\User_role;
+use App\Models\Role_permission;
 
 class User extends Authenticatable
 {
@@ -42,4 +45,27 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected $with = ['role'];
+
+    
+    public function role(): HasOne
+    {
+        return $this->hasOne(User_role::class, 'user_id');
+    }
+
+
+    public function level(){
+        return $this->role;
+    }
+
+    public function permissionTo($resource){
+        
+        $permission = $this->role->permission;
+        $permission_level = $permission
+                            ->firstWhere('resource_id',$resource);
+        
+        return $permission_level? $permission_level->permission_level : null ;
+    }
+
 }
