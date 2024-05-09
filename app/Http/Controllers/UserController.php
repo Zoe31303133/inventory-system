@@ -21,18 +21,15 @@ class UserController extends Controller
      */
     public function index()
     {
-        
         return User::all();
-
     }
 
     /**
-     * Show the form for creating a new resource.
+     * return role_list for create user.
      */
     public function create()
     {
         return RoleController::all();
-
     }
 
     /**
@@ -41,12 +38,14 @@ class UserController extends Controller
     public function store(Request $request)
     {
         
-        $registerUser  = $request->user;
+        $registerUser  = $request;
 
         $user = new User();
         $user->name = $registerUser->name;
         $user->email = $registerUser->email;
-        $user->password = $registerUser->password;
+        
+        //TODO: 使用固定值或隨機碼作為密碼，須與登入搭配Hash
+        $user->password = 'defaultPsw';
         $user->save();
     }
 
@@ -80,7 +79,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-     
+        
     }
 
 }
