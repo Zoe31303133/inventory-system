@@ -6,7 +6,7 @@ export default function manager({user}){
         <div className="d-flex flex-column flex-shrink-0 p-5 bg-body-tertiary" style={{width: "280px"}}>
         <ul className="nav nav-pills flex-column mb-auto gap-3">
 
-          { user.users_permission &&
+          { user.permission.user &&
             <li className="mb-1">
                 <button className="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
                   職員管理
@@ -20,7 +20,7 @@ export default function manager({user}){
               </li>
             }
 
-            { user.stocks_permission &&
+            { (user.permission.stock_product||user.permission.stock_ingredient) &&
               <li className="mb-1">
                 <button className="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
                   庫存管理
@@ -37,7 +37,7 @@ export default function manager({user}){
               </li>
             }
 
-            { user.products_permission &&
+            { user.permission.order &&
               <li className="mb-1">
                 <button className="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="false">
                   銷貨管理
@@ -51,7 +51,7 @@ export default function manager({user}){
               </li>
             }
 
-            { user.processes_permission &&
+            { user.permission.process &&
               <li className="mb-1">
                 <button className="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#schedule-collapse" aria-expanded="false">
                   製程管理
@@ -59,7 +59,7 @@ export default function manager({user}){
                 <div className="collapse" id="schedule-collapse">
                   <ul className="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     <li><a href="/dashboard/#/processSchedule" className="link-body-emphasis d-inline-flex text-decoration-none rounded">機台排程</a></li>
-                    <li><a href="#" className="link-body-emphasis d-inline-flex text-decoration-none rounded">本週製程</a></li>
+                    <li><a href="/dashboard/#/productionSchedule" className="link-body-emphasis d-inline-flex text-decoration-none rounded">本週製程</a></li>
                   </ul>
                 </div>
               </li>
