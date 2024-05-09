@@ -3,6 +3,9 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RolePermissionController;
 use Inertia\Inertia;
 
 /*
@@ -26,11 +29,6 @@ Route::get('/', function () {
 });
 
 
-Route::get('/login', function () {
-    return view('login');
-});
-
-Route::post('/login', [LoginController::class, 'store']);
 
 Route::resources([
     'permission_levels' => PermissionLevelController::class,
