@@ -27,10 +27,10 @@ return (<div className="bg-black  bg-opacity-50 h-100 w-100"  style={modalBackgr
             <div class="mb-3 ">
               <label for="exampleInputEmail1" class="form-label"></label>
               <select class="form-control form-control-sm">
-
+                <option disabled selected>請選擇職位</option>
                 {role_list &&
                     role_list.map((role)=>{
-                        return <option key={role.id} selected={role.id==user.role.role_id}>{role.id}</option>
+                        return <option key={role.id} selected={role.id==user.role?.role_id}>{role.id}</option>
                     })
                 }
 

@@ -5,8 +5,8 @@ import  EditUserModal from '@/Components/EditUserModal';
 
 export default function UserManagement(){
 
-    const [users, setUsers] = useState([{"id":1,"name":"zoe","email":"zoe@gmail.com","email_verified_at":null,"created_at":"2024-03-07T11:51:18.000000Z","updated_at":"2024-03-07T11:51:18.000000Z","role":{"user_id":"1","role_id":"sale","permission":[]}}]);
-    const [role_list, setRoleList] =useState([{"id":"baker"},{"id":"manager"},{"id":"sale"}]);
+    const [users, setUsers] = useState([]);
+    const [role_list, setRoleList] =useState([]);
     const [edit_mode, setEditMode] = useState(false);
     const [edited_user, setEditUser] = useState({});
     const [create_mode, setCreateMode] = useState(false);
@@ -19,6 +19,31 @@ export default function UserManagement(){
         left: 0,
         zIndex: 1050,
     }
+    
+    useEffect(()=>{
+
+        axios.get("/users").then((response)=>{
+            setUsers(response.data);
+            
+        });
+
+        axios.get('/roles').then((response)=>{
+            setRoleList(response.data);
+        });
+
+    }, [])
+
+    function createUser(e){
+        var form = new FormData(e.target.form);
+        var user = Object.fromEntries(form);
+        console.log(user);
+        axios.post('/users', user).then();
+    }
+
+    function deleteUser(id){
+        axios.delete('/users/'+id).then();
+    }
+
 
     function openCreateModal(){
         setCreateMode(true);
@@ -109,7 +134,7 @@ export default function UserManagement(){
                             </td>
                             <td>{user.id}</td>
                             <td>{user.name}</td>
-                            <td>{user.role.role_id}</td>
+                            <td>{user.role?.role_id}</td>
                             <td>{user.email}</td>
                             <td>
                             <div className='d-flex gap-3'>
